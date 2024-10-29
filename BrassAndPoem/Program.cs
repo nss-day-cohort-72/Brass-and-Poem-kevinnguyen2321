@@ -1,6 +1,8 @@
 ﻿
 //create a "products" variable here to include at least five Product instances. Give them appropriate ProductTypeIds.
- List <Product> products = new List<Product> () {
+using System.Collections;
+
+List <Product> products = new List<Product> () {
     new Product() {
         Name = "The Collected Poems of Robert Frost",
         Price = 14.99m,
@@ -41,34 +43,51 @@
  };
 //put your greeting here
 Console.WriteLine("Hello and welcome to Brass & Poem");
+ Console.WriteLine();
 
 
 //implement your loop here
  int userChoice = 0;
 
  while (userChoice != 5)
- {
-  Console.WriteLine("Please choose an option:");
-  Console.WriteLine(@"
-    1. DisplayMenu
-    2. DisplayAllProducts
-    3. DeleteProduct
-    4. AddProduct
-    5. UpdateProduct
-");
+ { 
+     Console.WriteLine("Please choose an option:");
+     DisplayMenu();
+  
+ 
+ 
    
    userChoice = int.Parse(Console.ReadLine());
+   
    switch (userChoice)
    {
     case 1:
-    DisplayMenu();
-    break;
+        DisplayAllProducts(products,productTypes);
+        break;
+
+    case 2:
+        DisplayAllProducts(products,productTypes);
+        DeleteProduct(products,productTypes);
+        break;
+
+    case 3:
+        AddProduct(products,productTypes);
+        break;
+
+    case 4:
+        DisplayAllProducts(products,productTypes);
+        UpdateProduct(products,productTypes);
+        break;
     }
+
+
+    
 }
 
 
 void DisplayMenu()
 {
+    
     Console.WriteLine(@"
     1. Display all products
     2. Delete a product
@@ -80,22 +99,92 @@ void DisplayMenu()
 
 void DisplayAllProducts(List<Product> products, List<ProductType> productTypes)
 {
-    throw new NotImplementedException();
+    List<string> productDisplay = products.Select((product, index) => {
+         ProductType productType = productTypes.FirstOrDefault(type => type.Id == product.ProductTypeId);
+         string productTypeName = productType.Title;
+         return $"{index + 1}. {product.Name} ({productTypeName}) (${product.Price}) ";
+    }).ToList();
+    
+    for (int i = 0; i < productDisplay.Count; i++)
+  {
+    Console.WriteLine(productDisplay[i]);
+  }
+  Console.WriteLine();
 }
 
 void DeleteProduct(List<Product> products, List<ProductType> productTypes)
 {
-    throw new NotImplementedException();
+    Console.WriteLine("Please choose an option to delete");
+    Console.WriteLine();
+    int userSelection = int.Parse(Console.ReadLine());
+    products.RemoveAt(userSelection - 1);
+    Console.WriteLine("You have successfully removed a product");
+    Console.WriteLine();
+
 }
 
 void AddProduct(List<Product> products, List<ProductType> productTypes)
 {
-    throw new NotImplementedException();
+   Console.WriteLine("Please enter name of product");
+   string productName = Console.ReadLine();
+
+   Console.WriteLine("Please enter price of product");
+   decimal productPrice = decimal.Parse(Console.ReadLine());
+
+   Console.WriteLine(@"Please choose a Product type:
+   1. Poem
+   2. Brass
+   ");
+
+   int productId = int.Parse(Console.ReadLine());
+
+   Product newProduct = new Product() {
+    Name = productName,
+    Price = productPrice,
+    ProductTypeId = productId
+   };
+
+   products.Add(newProduct);
+
 }
 
 void UpdateProduct(List<Product> products, List<ProductType> productTypes)
 {
-    throw new NotImplementedException();
+    Console.WriteLine("Please choose a product to update");
+    int userSelection = int.Parse(Console.ReadLine());
+
+    Product selectedProduct = products[userSelection - 1];
+
+    Console.WriteLine($"You chose {selectedProduct.Name}");
+
+    Console.WriteLine("Please enter new name for product (Or press enter to keep current name)");
+
+    string newProductName = Console.ReadLine();
+
+    if (!string.IsNullOrEmpty(newProductName))
+    {
+     selectedProduct.Name = newProductName;
+    }
+
+    Console.WriteLine("Please enter new price for product (Or press enter to keep current price)");
+
+   string newProductPrice = Console.ReadLine();
+   if (!string.IsNullOrEmpty(newProductPrice))
+    {
+     selectedProduct.Price = decimal.Parse(newProductPrice);
+    }
+
+    Console.WriteLine(@"Please choose a product type(Press enter to keep current type):
+    1. Poem
+    2. Brass
+    ");
+
+    string newProductId = Console.ReadLine();
+    
+     if (!string.IsNullOrEmpty(newProductId))
+    {
+     selectedProduct.ProductTypeId = int.Parse(newProductId);
+    }
 }
 
 // don't move or change this!
